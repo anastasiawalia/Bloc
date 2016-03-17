@@ -55,7 +55,26 @@ var albumMusk = {
       + '</tr>'
       ;
  
-     return $(template);
+     var $row = $(template);
+     
+     var clickHandler = function() {
+     // clickHandler logic
+     };
+     
+     var onHover = function(event) {
+     // Placeholder for function logic
+     };
+     var offHover = function(event) {
+         // Placeholder for function logic
+     };
+     
+     // #1
+     $row.find('.song-item-number').click(clickHandler);
+     // #2
+     $row.hover(onHover, offHover);
+     // #3
+     return $row;
+     
  };
 
 var setCurrentAlbum = function(album) {
@@ -103,43 +122,16 @@ var setCurrentAlbum = function(album) {
      
  };
 
-var songListContainer = document.getElementsByClassName('album-view-song-list')[0];
-var songRows = document.getElementsByClassName('album-view-song-item');
 
 var playButtonTemplate = '<a class="album-song-button"><span class="ion-play"></span></a>';
 var pauseButtonTemplate = '<a class="album-song-button"><span class="ion-pause"></span></a>';
 
 var currentlyPlayingSong = null;
 
- window.onload = function() {
+ $(document).ready(function() {
      setCurrentAlbum(albumPicasso);
      
-     songListContainer.addEventListener('mouseover', function(event) {
-         // #1
-         if (event.target.parentElement.className === 'album-view-song-item') {
-         event.target.parentElement.querySelector('.song-item-number').innerHTML = playButtonTemplate;
-         }
-     });
-     
-     for (var i = 0; i < songRows.length; i++) {
-         songRows[i].addEventListener('mouseleave', function(event) {
-         
-         // #1
-         var songItem = getSongItem(event.target);
-         var songItemNumber = songItem.getAttribute('data-song-number');
- 
-         // #2
-         if (songItemNumber !== currentlyPlayingSong) {
-            songItem.innerHTML = songItemNumber;
-             }
-             
-         });
-         
-         songRows[i].addEventListener('click', function(event) {
-             // Event handler call
-             clickHandler(event.target);
-         });
-     }
+});
      
      var albums = [albumPicasso, albumMarconi, albumMusk];
      var index = 1;
