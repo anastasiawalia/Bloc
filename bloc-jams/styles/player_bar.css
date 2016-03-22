@@ -120,9 +120,17 @@
      margin-top: -0.25rem;
      border-radius: 50%;
      cursor: pointer;
+     transition: width 100ms ease-in-out,
+             height 100ms ease-in-out,
+             margin-top 100ms ease-in-out,
+             margin-left 100ms ease-in-out;
+     
+     /* This is not what it looks like in the assignment instructions
+     someone REALLY needs to proof read the course material 
+     
      -webkit-transition: all 100ms ease-in-out;
         -moz-transition: all 100ms ease-in-out;
-             transition: all 100ms ease-in-out;
+             transition: all 100ms ease-in-out;  */
  }
  
  .seek-bar:hover .thumb {

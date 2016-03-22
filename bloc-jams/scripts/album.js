@@ -12,7 +12,7 @@ var createSongRow = function(songNumber, songName, songLength) {
         '<tr class="album-view-song-item">'
       + '  <td class="song-item-number" data-song-number="' + songNumber + '">' + songNumber + '</td>'
       + '  <td class="song-item-title">' + songName + '</td>'
-      + '  <td class="song-item-duration">' + songLength + '</td>'
+      + '  <td class="song-item-duration">' + filterTimeCode(songLength) + '</td>'
       + '</tr>'
       ;
  
@@ -118,6 +118,7 @@ var $playPauseButton = $('.main-controls .play-pause')
 
  $(document).ready(function() {
      setCurrentAlbum(albumPicasso);
+     setupSeekBars();
      $previousButton.click(previousSong);
      $nextButton.click(nextSong);
      $playPauseButton.click(togglePlayFromPlayerBar);
@@ -139,7 +140,13 @@ var $playPauseButton = $('.main-controls .play-pause')
 //whole section missing from lesson 32 can't find location of code in previous lessons
 var updatePlayerBarSong = function() {
     //more code spose to be here? WTF
-     $('.main-controls .play-pause').html(playerBarPauseButton);
+    $('.current-playing .song-name').text(currentSongFromAlbum.name);
+    $('.current-playing .artist-name').text(currentAlbum.artist);
+    $('.current-playing .artist-song-mobile').text(currentSongFromAlbum.name + " - " + currentAlbum.artist);
+    
+    $('.main-controls .play-pause').html(playerBarPauseButton);
+     
+    setTotalTimeInPlayerBar(filterTimeCode(currentSongFromAlbum.lenght));
  };
 
 //whole section missing from lesson 32 can't find location of code in previous lessons WTF!!!
@@ -228,4 +235,97 @@ var getSongItem = function(element) {
      currentSoundFile.play();
      updatePlayerBarSong();
      //... missing something?
+ };
+
+var setTotalTimeInPlayerBar = function(totalTime) {
+    var $totalTimeElement = $('.seek-control .total-time');
+    $totalTimeElement.text(totalTime);
+}
+     
+var filterTimeCode = function(timeInSeconds) {
+    var seconds = Number.parseFloat(timeInSeconds);
+    var wholeSeconds = Math.floor(seconds);
+    var minutes = Math.floor(wholeSeconds / 60);
+    var remainingSeconds = wholeSeconds % 60;
+    
+    var output = minutes + ':';
+    
+    if (remainingSeconds < 10) {
+        output += '0';
+    }
+    
+    output += remainingSeconds;
+    
+    return output;
+};
+
+ var updateSeekBarWhileSongPlays = function() {
+     if (currentSoundFile) {
+         currentSoundFile.bind('timeupdate', function(event) {
+             var currentTime = this.getTime();
+             var songLength = this.getDuration();
+             var seekBarFillRatio = this.getTime() / this.getDuration();
+             var $seekBar = $('.seek-control .seek-bar');
+             updateSeekPercentage($seekBar, seekBarFillRatio);
+             setCurrentTimeInPlayerBar(filterTimeCode(currentTime));
+         });
+     }
+ };
+
+ var seek = function(time) {
+     if (currentSoundFile) {
+         currentSoundFile.setTime(time);
+     }
+ }
+ 
+ var setCurrentTimeInPlayerBar = function (currentTime) {
+     var $currentTimeElement = $('.seek-control .current-time');
+     $currentTimeElement.text(currentTime);
+ }
+        
+ var updateSeekPercentage = function($seekBar, seekBarFillRatio) {
+    var offsetXPercent = seekBarFillRatio * 100;
+    // #1
+    offsetXPercent = Math.max(0, offsetXPercent);
+    offsetXPercent = Math.min(100, offsetXPercent);
+ 
+    // #2
+    var percentageString = offsetXPercent + '%';
+    $seekBar.find('.fill').width(percentageString);
+    $seekBar.find('.thumb').css({left: percentageString});
+ };
+        
+var setupSeekBars = function() {
+     var $seekBars = $('.player-bar .seek-bar');
+ 
+     $seekBars.click(function(event) {
+         // #3
+         var offsetX = event.pageX - $(this).offset().left;
+         var barWidth = $(this).width();
+         // #4
+         var seekBarFillRatio = offsetX / barWidth;
+ 
+         // #5
+         updateSeekPercentage($(this), seekBarFillRatio);
+     });
+         // #7
+     $seekBars.find('.thumb').mousedown(function(event) {
+         // #8
+         var $seekBar = $(this).parent();
+ 
+         // #9
+         $(document).bind('mousemove.thumb', function(event){
+             var offsetX = event.pageX - $seekBar.offset().left;
+             var barWidth = $seekBar.width();
+             var seekBarFillRatio = offsetX / barWidth;
+ 
+             updateSeekPercentage($seekBar, seekBarFillRatio);
+         });
+ 
+         // #10
+         $(document).bind('mouseup.thumb', function() {
+             $(document).unbind('mousemove.thumb');
+             $(document).unbind('mouseup.thumb');
+         });
+     });
  };
