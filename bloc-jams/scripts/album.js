@@ -88,24 +88,39 @@ var setCurrentAlbum = function(album) {
      
  };
 
+var togglePlayFromPlayerBar = function () {
+    var $currentlyPlayingSongNumber) = getSongNumberCell(currentlyPlayingSongNumber);
+    if (currentSoundFile.isPaused()) {
+        $currentlyPlayingCell.html(pauseButtonTemplate);
+        $(this).html(playerBarPlayButton);
+        currentSoundFile.play();
+    } else if (currentSoundFile) {
+        $currentlyPlayingCell.html(playButtonTemplate);
+        $(this).html(playerBarPlayButton)
+        currentSoundFile.pause();
+    }
+};
 
 var playButtonTemplate = '<a class="album-song-button"><span class="ion-play"></span></a>';
 var pauseButtonTemplate = '<a class="album-song-button"><span class="ion-pause"></span></a>';
-
 var playerBarPlayButton = '<span class="ion-play"></span>';
 var playerBarPauseButton = '<span class="ion-pause"></span>';
 
 var currentAlbum = null;
 var currentlyPlayingSongNumber = null;
 var currentSongFromAlbum = null;
+var currentSoundFile = null;
+//var currentVolume = 80 NOT IN LESSONS IN VIDEO
 
- var $previousButton = $('.main-controls .previous');
- var $nextButton = $('.main-controls .next');
+var $previousButton = $('.main-controls .previous');
+var $nextButton = $('.main-controls .next');
+var $playPauseButton = $('.main-controls .play-pause')
 
  $(document).ready(function() {
      setCurrentAlbum(albumPicasso);
      $previousButton.click(previousSong);
      $nextButton.click(nextSong);
+     $playPauseButton.click(togglePlayFromPlayerBar);
 });
      
      var albums = [albumPicasso, albumMarconi, albumMusk];
@@ -174,3 +189,43 @@ var getSongItem = function(element) {
             return;
     }  
 };
+
+ var setSong = function(songNumber) {
+          if (currentSoundFile) {
+         currentSoundFile.stop();
+     }
+     currentlyPlayingSongNumber = parseInt(songNumber);
+     currentSongFromAlbum = currentAlbum.songs[songNumber - 1];
+     // #1
+     currentSoundFile = new buzz.sound(currentSongFromAlbum.audioUrl, {
+         // #2
+         formats: [ 'mp3' ],
+         preload: true
+     });
+     
+     setVolume(currentVolume);
+ };
+       
+ var setVolume = function(volume) {
+     if (currentSoundFile) {
+         currentSoundFile.setVolume(volume);
+     }
+ };
+        
+ 
+//Lesson 33 - Could not find this instruction in code lessons!!! But it's in the examples to edit!        
+ var previousSong = function() {
+     //... missing something?
+     setSong(currentSongIndex + 1);
+     currentSoundFile.play();
+     updatePlayerBarSong();
+     //... missing something?
+ };
+
+ var nextSong = function() {
+     //... missing something?
+     setSong(currentSongIndex + 1);
+     currentSoundFile.play();
+     updatePlayerBarSong();
+     //... missing something?
+ };
