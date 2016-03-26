@@ -24,7 +24,12 @@ $(window).load(function() {
 });
  
 
-/* var revealPoint = function() {
+/* 
+
+CODE ATTMEPT NUMBER2
+---------------------
+
+var revealPoint = function() {
          
          $(this).css({
              opacity: 1,
@@ -47,11 +52,13 @@ $(window).load(function () {
             animatePoints();
         }
     });
-});  */
+});  
 
 
-/* ORIGINAL CODE I WAS WORKING BEFORE REWORK
 
+
+ORIGINAL CODE I WAS WORKING BEFORE REWORK
+----------------------------------------
 
 var animatePoints = function() {
      var revealPoint = function() {
